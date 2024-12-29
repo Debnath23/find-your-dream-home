@@ -21,5 +21,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 399,
     height: 552,
+    backgroundColor: '#fff',
   }
 });

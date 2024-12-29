@@ -1,8 +1,12 @@
 import { Colors } from "@/constants/Colors";
 import icons from "@/constants/icons";
 import images from "@/constants/images";
+import { login } from "@/lib/appwrite";
+import { useGlobalContext } from "@/lib/global-provider";
+import { Redirect } from "expo-router";
 import React from "react";
 import {
+  Alert,
   Image,
   ScrollView,
   StyleSheet,
@@ -15,9 +19,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 type Props = {};
 
 const SignIn = (props: Props) => {
-  const handleLogin = () => {
-    console.log("Login");
+  const { refetch, loading, isLoggedIn } = useGlobalContext();
+
+  const handleLogin = async () => {
+    const response = await login();
+
+    if (response) {
+      refetch();
+    } else {
+      Alert.alert("Error", "Failed to login");
+    }
   };
+
+  if(!loading && isLoggedIn) return <Redirect href="/" />;
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={{ height: "100%" }}>
