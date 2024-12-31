@@ -31,98 +31,27 @@ const SignIn = (props: Props) => {
     }
   };
 
-  if(!loading && isLoggedIn) return <Redirect href="/" />;
+  if (!loading && isLoggedIn) return <Redirect href="/" />;
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={{ height: "100%" }}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Image style={styles.image} source={images.onboarding} />
 
-        <View style={{ paddingHorizontal: 10 }}>
-          <Text
-            style={{
-              textAlign: "center",
-              fontFamily: "Regular",
-              color: Colors.BLACK3,
-            }}
-          >
-            WELCOME TO REAL SCOUT
-          </Text>
+        <View style={styles.content}>
+          <Text style={styles.welcomeText}>WELCOME TO REAL SCOUT</Text>
 
-          <Text
-            style={{
-              textAlign: "center",
-              fontFamily: "Bold",
-              color: Colors.BLACK1,
-              fontSize: 24,
-              marginTop: 8,
-            }}
-          >
+          <Text style={styles.title}>
             Let's Get Closer to {"\n"}
-            <Text
-              style={{
-                color: Colors.PRIMARY1,
-              }}
-            >
-              Your Dream Home
-            </Text>
+            <Text style={styles.highlightText}>Your Dream Home</Text>
           </Text>
 
-          <Text
-            style={{
-              textAlign: "center",
-              fontFamily: "Regular",
-              color: Colors.BLACK3,
-              fontSize: 16,
-              marginTop: 8,
-            }}
-          >
-            Login to Real Scout with Google
-          </Text>
+          <Text style={styles.subText}>Login to Real Scout with Google</Text>
 
-          <TouchableOpacity
-            onPress={handleLogin}
-            style={{
-              backgroundColor: Colors.WHITE,
-              shadowColor: Colors.BLACK2,
-              shadowOffset: {
-                width: 0,
-                height: 4,
-              },
-              shadowOpacity: 0.5,
-              shadowRadius: 6,
-              elevation: 6,
-              paddingVertical: 12,
-              borderRadius: 99,
-              marginTop: 16,
-            }}
-          >
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Image
-                source={icons.google}
-                style={{
-                  height: 20,
-                  width: 20,
-                  resizeMode: "contain",
-                }}
-              />
-              <Text
-                style={{
-                  fontFamily: "Medium",
-                  color: Colors.BLACK2,
-                  marginLeft: 8,
-                  fontSize: 17,
-                }}
-              >
-                Continue with Google
-              </Text>
+          <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
+            <View style={styles.buttonContent}>
+              <Image source={icons.google} style={styles.googleIcon} />
+              <Text style={styles.buttonText}>Continue with Google</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -138,9 +67,67 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: "#fff",
   },
+  scrollContainer: {
+    height: "100%",
+  },
   image: {
     width: "100%",
     height: "67%",
     resizeMode: "contain",
+  },
+  content: {
+    paddingHorizontal: 10,
+  },
+  welcomeText: {
+    textAlign: "center",
+    fontFamily: "Regular",
+    color: Colors.BLACK3,
+  },
+  title: {
+    textAlign: "center",
+    fontFamily: "Bold",
+    color: Colors.BLACK1,
+    fontSize: 24,
+    marginTop: 8,
+  },
+  highlightText: {
+    color: Colors.PRIMARY1,
+  },
+  subText: {
+    textAlign: "center",
+    fontFamily: "Regular",
+    color: Colors.BLACK3,
+    fontSize: 16,
+    marginTop: 8,
+  },
+  loginButton: {
+    backgroundColor: Colors.WHITE,
+    shadowColor: Colors.BLACK2,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 6,
+    paddingVertical: 12,
+    borderRadius: 99,
+    marginTop: 16,
+  },
+  buttonContent: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  googleIcon: {
+    height: 20,
+    width: 20,
+    resizeMode: "contain",
+  },
+  buttonText: {
+    fontFamily: "Medium",
+    color: Colors.BLACK2,
+    marginLeft: 8,
+    fontSize: 17,
   },
 });
