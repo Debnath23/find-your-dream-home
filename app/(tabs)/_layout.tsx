@@ -24,9 +24,10 @@ const TabIcon = ({
   <View
     style={{
       display: "flex",
-      marginTop: 12,
+      marginTop: 22,
       flexDirection: "column",
       alignItems: "center",
+      justifyContent: "center",
     }}
   >
     <Image
@@ -46,6 +47,7 @@ const TabIcon = ({
         width: "100%",
         marginTop: 4,
         alignItems: "center",
+        marginLeft: 2,
       }}
     >
       {title}
