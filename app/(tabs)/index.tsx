@@ -1,8 +1,15 @@
+import { Card, FeaturedCard } from "@/components/Cards";
 import Search from "@/components/Search";
 import { Colors } from "@/constants/Colors";
 import icons from "@/constants/icons";
 import { useGlobalContext } from "@/lib/global-provider";
-import { Image, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
@@ -20,7 +27,38 @@ export default function HomeScreen() {
         </View>
         <Image source={icons.bell} style={styles.bellIcon} />
       </View>
+
       <Search />
+
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Featured</Text>
+          <TouchableOpacity>
+            <Text style={styles.sectionLink}>See All</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.featuredCards}>
+        <FeaturedCard onPress={() => { }} />
+        <FeaturedCard onPress={() => { }} />
+        <FeaturedCard onPress={() => { }} />
+      </View>
+
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Our Recommendation</Text>
+          <TouchableOpacity>
+            <Text style={styles.sectionLink}>See All</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.cards}>
+        <Card onPress={() => { }} />
+        <Card onPress={() => { }} />
+        <Card onPress={() => { }} />
+      </View>
     </SafeAreaView>
   );
 }
@@ -35,7 +73,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 8,
   },
   userInfo: {
     flexDirection: "row",
@@ -66,5 +104,36 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     resizeMode: "contain",
+  },
+  section: {
+    paddingHorizontal: 20,
+    marginTop: 8,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontFamily: "Bold",
+    color: Colors.BLACK1,
+  },
+  sectionLink: {
+    fontSize: 12,
+    fontFamily: "Medium",
+    color: Colors.PRIMARY1,
+  },
+  featuredCards: {
+    flexDirection: "row",
+    gap: 14,
+    paddingHorizontal: 20,
+    marginTop: 8,
+  },
+  cards: {
+    flexDirection: "row",
+    gap: 8,
+    paddingHorizontal: 20,
+    marginTop: 8,
   },
 });

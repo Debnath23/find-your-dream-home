@@ -1,7 +1,6 @@
 import { Colors } from "@/constants/Colors";
 import { settings } from "@/constants/data";
 import icons from "@/constants/icons";
-import images from "@/constants/images";
 import { logout } from "@/lib/appwrite";
 import { useGlobalContext } from "@/lib/global-provider";
 import React from "react";
