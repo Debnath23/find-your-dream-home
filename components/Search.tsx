@@ -10,6 +10,7 @@ import { router, useLocalSearchParams, usePathname } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import icons from "@/constants/icons";
 import { useDebouncedCallback } from "use-debounce";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 type Props = {};
 
@@ -19,6 +20,8 @@ const Search = (props: Props) => {
   const [search, setSearch] = useState(
     typeof params.query === "string" ? params.query : ""
   );
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
 
   const debouncedSearch = useDebouncedCallback(
     (text: string) => router.setParams({ query: text }),
@@ -31,18 +34,42 @@ const Search = (props: Props) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: isDarkMode ? Colors.BLACK3 : Colors.WHITE,
+          borderColor: isDarkMode ? Colors.WHITE : Colors.BLACK3,
+        },
+      ]}
+    >
       <View style={styles.searchBar}>
-        <Image source={icons.search} style={styles.searchIcon} />
+        <Image
+          source={icons.search}
+          style={[
+            styles.searchIcon,
+            { tintColor: isDarkMode ? Colors.WHITE : Colors.BLACK3 },
+          ]}
+        />
         <TextInput
           value={search}
           onChangeText={handleSearch}
           placeholder="Search your dream home"
-          style={styles.textInput}
+          placeholderTextColor={isDarkMode ? Colors.WHITE : Colors.BLACK3}
+          style={[
+            styles.textInput,
+            { color: isDarkMode ? Colors.WHITE : Colors.BLACK3 },
+          ]}
         />
       </View>
       <TouchableOpacity>
-        <Image source={icons.filter} style={styles.filterIcon} />
+        <Image
+          source={icons.filter}
+          style={[
+            styles.filterIcon,
+            { tintColor: isDarkMode ? Colors.WHITE : Colors.BLACK3 },
+          ]}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -59,9 +86,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginLeft: 20,
     marginTop: 12,
-    backgroundColor: "#fff",
     borderWidth: 0.5,
-    borderColor: Colors.BLACK3,
     width: "90%",
     borderRadius: 10,
   },
@@ -80,7 +105,6 @@ const styles = StyleSheet.create({
   textInput: {
     fontFamily: "Regular",
     fontSize: 14,
-    color: Colors.BLACK3,
     marginLeft: 10,
     display: "flex",
   },

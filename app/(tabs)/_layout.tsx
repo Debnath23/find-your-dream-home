@@ -16,10 +16,12 @@ const TabIcon = ({
   icon,
   focused,
   title,
+  isDarkMode,
 }: {
   icon: any;
   focused: boolean;
   title: string;
+  isDarkMode: boolean;
 }) => (
   <View
     style={{
@@ -37,11 +39,11 @@ const TabIcon = ({
         width: 24,
         resizeMode: "contain",
       }}
-      tintColor={focused ? "#0061ff" : "#666876"}
+      tintColor={focused ? (isDarkMode ? "#42A5F5" : "#0061FF") : "#666876"}
     />
     <Text
       style={{
-        color: focused ? "#0061ff" : "#666876",
+        color: focused ? (isDarkMode ? "#42A5F5" : "#0061FF") : "#666876",
         fontSize: 10,
         fontFamily: "Medium",
         width: "100%",
@@ -57,6 +59,7 @@ const TabIcon = ({
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
   const { loading, isLoggedIn } = useGlobalContext();
 
   if (loading) {
@@ -66,10 +69,10 @@ export default function TabLayout() {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: Colors[colorScheme ?? "light"].background,
+          backgroundColor: isDarkMode ? Colors.BLACK : Colors.WHITE,
         }}
       >
-        <ActivityIndicator />
+        <ActivityIndicator color={isDarkMode ? Colors.BLACK : Colors.WHITE} />
       </SafeAreaView>
     );
   }
@@ -79,13 +82,13 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: isDarkMode ? Colors.BLACK : Colors.WHITE,
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
           position: "absolute",
-          backgroundColor: "white",
-          borderTopColor: "#0061FF1A",
+          backgroundColor: isDarkMode ? Colors.BLACK : Colors.WHITE,
+          borderTopColor: isDarkMode ? "#424242" : "#0061FF1A",
           borderTopWidth: 1,
           minHeight: 60,
         },
@@ -96,7 +99,12 @@ export default function TabLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon={icons.home} focused={focused} title="Home" />
+            <TabIcon
+              icon={icons.home}
+              focused={focused}
+              title="Home"
+              isDarkMode={isDarkMode}
+            />
           ),
         }}
       />
@@ -105,7 +113,12 @@ export default function TabLayout() {
         options={{
           title: "Explore",
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon={icons.search} focused={focused} title="Explore" />
+            <TabIcon
+              icon={icons.search}
+              focused={focused}
+              title="Explore"
+              isDarkMode={isDarkMode}
+            />
           ),
         }}
       />
@@ -114,7 +127,12 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ focused }) => (
-            <TabIcon icon={icons.person} focused={focused} title="Profile" />
+            <TabIcon
+              icon={icons.person}
+              focused={focused}
+              title="Profile"
+              isDarkMode={isDarkMode}
+            />
           ),
         }}
       />

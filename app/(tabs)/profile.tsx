@@ -1,6 +1,7 @@
 import { Colors } from "@/constants/Colors";
 import { settings } from "@/constants/data";
 import icons from "@/constants/icons";
+import { useColorScheme } from "@/hooks/useColorScheme.web";
 import { logout } from "@/lib/appwrite";
 import { useGlobalContext } from "@/lib/global-provider";
 import React from "react";
@@ -30,20 +31,30 @@ const SettingsItem = ({
   onPress,
   textStyle,
   showArrow = true,
-}: SettingItemProps) => (
-  <TouchableOpacity onPress={onPress} style={styles.settingsItemContainer}>
-    <View style={styles.settingsItemContent}>
-      <Image source={icon} style={[styles.settingsItemIcon, textStyle]} />
-      <Text style={[styles.settingsItemText, textStyle]}>{title}</Text>
-    </View>
-    {showArrow && (
-      <Image source={icons.rightArrow} style={styles.settingsItemArrow} />
-    )}
-  </TouchableOpacity>
-);
+}: SettingItemProps) => {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+
+  const styles = createStyles(isDarkMode);
+  return (
+    <TouchableOpacity onPress={onPress} style={styles.settingsItemContainer}>
+      <View style={styles.settingsItemContent}>
+        <Image source={icon} style={[styles.settingsItemIcon, textStyle]} />
+        <Text style={[styles.settingsItemText, textStyle]}>{title}</Text>
+      </View>
+      {showArrow && (
+        <Image source={icons.rightArrow} style={styles.settingsItemArrow} />
+      )}
+    </TouchableOpacity>
+  );
+};
 
 const Profile = () => {
   const { user, refetch } = useGlobalContext();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+
+  const styles = createStyles(isDarkMode);
 
   const handleLogout = async () => {
     const response = await logout();
@@ -94,7 +105,7 @@ const Profile = () => {
             icon={icons.logout}
             onPress={handleLogout}
             showArrow={false}
-            textStyle={{ color: "#ff0000" }}
+            textStyle={{ color: Colors.DANGER }}
           />
         </View>
       </ScrollView>
@@ -104,98 +115,106 @@ const Profile = () => {
 
 export default Profile;
 
-const styles = StyleSheet.create({
-  container: {
-    height: "100%",
-    backgroundColor: "#fff",
-  },
-  scrollContent: {
-    paddingBottom: 128,
-    paddingHorizontal: 28,
-  },
-  header: {
-    fontFamily: "Bold",
-    fontSize: 20,
-    color: "#191D31",
-    marginTop: 24,
-  },
-  bellIcon: {
-    width: 24,
-    height: 24,
-    resizeMode: "contain",
-    position: "absolute",
-    right: 0,
-    top: 26,
-  },
-  avatarContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 20,
-  },
-  avatarWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    position: "relative",
-  },
-  avatar: {
-    width: 140,
-    height: 140,
-    resizeMode: "contain",
-    borderRadius: 99,
-  },
-  editIcon: {
-    width: 35,
-    height: 35,
-    resizeMode: "contain",
-    position: "absolute",
-    bottom: 6,
-    left: 38,
-  },
-  name: {
-    fontFamily: "Medium",
-    fontSize: 20,
-    color: "#191D31",
-    marginTop: 8,
-  },
-  section: {
-    display: "flex",
-    flexDirection: "column",
-    marginTop: 24,
-  },
-  borderTop: {
-    borderTopWidth: 1,
-    borderTopColor: "#E5E5E5",
-    marginTop: 20,
-  },
-  settingsItemContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 8,
-  },
-  settingsItemContent: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  settingsItemIcon: {
-    width: 24,
-    height: 24,
-    resizeMode: "contain",
-  },
-  settingsItemText: {
-    fontFamily: "Medium",
-    fontSize: 16,
-    color: Colors.BLACK2,
-  },
-  settingsItemArrow: {
-    width: 20,
-    height: 20,
-    resizeMode: "contain",
-    tintColor: Colors.BLACK2,
-  },
-});
+const createStyles = (isDarkMode: boolean) =>
+  StyleSheet.create({
+    container: {
+      height: "100%",
+      backgroundColor: isDarkMode
+        ? Colors.dark.background
+        : Colors.light.background,
+    },
+    scrollContent: {
+      paddingBottom: 128,
+      paddingHorizontal: 28,
+    },
+    header: {
+      fontFamily: "Bold",
+      fontSize: 20,
+      color: isDarkMode ? Colors.WHITE : "#191D31",
+      marginTop: 24,
+    },
+    bellIcon: {
+      width: 24,
+      height: 24,
+      resizeMode: "contain",
+      position: "absolute",
+      right: 0,
+      top: 26,
+      tintColor: isDarkMode ? Colors.WHITE : Colors.BLACK2,
+    },
+    avatarContainer: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "center",
+      marginTop: 20,
+    },
+    avatarWrapper: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      position: "relative",
+    },
+    avatar: {
+      width: 140,
+      height: 140,
+      resizeMode: "contain",
+      borderRadius: 99,
+    },
+    editIcon: {
+      width: 35,
+      height: 35,
+      resizeMode: "contain",
+      position: "absolute",
+      bottom: 4,
+      left: 38,
+    },
+    name: {
+      fontFamily: "Medium",
+      fontSize: 20,
+      color: isDarkMode ? Colors.WHITE : "#191D31",
+      marginTop: 8,
+    },
+    section: {
+      display: "flex",
+      flexDirection: "column",
+      marginTop: 24,
+    },
+    borderTop: {
+      borderTopWidth: 1,
+      borderTopColor: "#E5E5E5",
+      marginTop: 20,
+    },
+    settingsItemContainer: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingVertical: 8,
+      backgroundColor: isDarkMode
+        ? Colors.dark.background
+        : Colors.light.background,
+    },
+    settingsItemContent: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 10,
+    },
+    settingsItemIcon: {
+      width: 24,
+      height: 24,
+      resizeMode: "contain",
+      tintColor: isDarkMode ? Colors.WHITE : Colors.BLACK2,
+    },
+    settingsItemText: {
+      fontFamily: "Medium",
+      fontSize: 16,
+      color: isDarkMode ? Colors.WHITE : Colors.BLACK2,
+    },
+    settingsItemArrow: {
+      width: 20,
+      height: 20,
+      resizeMode: "contain",
+      tintColor: isDarkMode ? Colors.WHITE : Colors.BLACK2,
+    },
+  });
