@@ -14,7 +14,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 
 type Props = {};
 
-const Search = (props: Props) => {
+const Search = ({ style }: { style?: object }) => {
   const path = usePathname();
   const params = useLocalSearchParams();
   const [search, setSearch] = useState(
@@ -36,6 +36,7 @@ const Search = (props: Props) => {
   return (
     <View
       style={[
+        style,
         styles.container,
         {
           backgroundColor: isDarkMode ? Colors.BLACK3 : Colors.WHITE,
@@ -84,10 +85,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginLeft: 20,
     marginTop: 12,
     borderWidth: 0.5,
-    width: "90%",
     borderRadius: 10,
   },
   searchBar: {

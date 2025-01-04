@@ -72,7 +72,10 @@ export default function TabLayout() {
           backgroundColor: isDarkMode ? Colors.BLACK : Colors.WHITE,
         }}
       >
-        <ActivityIndicator color={isDarkMode ? Colors.BLACK : Colors.WHITE} />
+        <ActivityIndicator
+          size="large"
+          color={isDarkMode ? Colors.BLACK : Colors.WHITE}
+        />
       </SafeAreaView>
     );
   }
@@ -88,9 +91,8 @@ export default function TabLayout() {
         tabBarStyle: {
           position: "absolute",
           backgroundColor: isDarkMode ? Colors.BLACK : Colors.WHITE,
-          borderTopColor: isDarkMode ? "#424242" : "#0061FF1A",
-          borderTopWidth: 1,
-          minHeight: 60,
+          minHeight: 55,
+          bottom: 0,
         },
       }}
     >

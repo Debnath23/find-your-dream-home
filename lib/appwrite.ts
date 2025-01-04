@@ -1,6 +1,14 @@
-import { Account, Avatars, Client, Databases, OAuthProvider } from "react-native-appwrite";
+import {
+  Account,
+  Avatars,
+  Client,
+  Databases,
+  OAuthProvider,
+  Query,
+} from "react-native-appwrite";
 import * as Linking from "expo-linking";
 import { openAuthSessionAsync } from "expo-web-browser";
+import Property from "@/types/property.type";
 
 export const config = {
   platform: "com.dm.restate",
@@ -89,5 +97,65 @@ export const getCurrentUser = async () => {
   } catch (error) {
     console.error(error);
     return null;
+  }
+};
+
+export const getLatestProperties = async () => {
+  try {
+    const properties = await databases.listDocuments(
+      config.databaseId!,
+      config.propertiesCollectionId!,
+      [Query.orderAsc("$createdAt"), Query.limit(5)]
+    );
+
+    if (!properties) throw new Error("Failed to get properties");
+
+    return properties.documents;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+export const getProperties = async ({
+  filter = "",
+  query = "",
+  limit = 6,
+}: {
+  filter?: string;
+  query?: string;
+  limit?: number;
+}): Promise<Property[]> => {
+  try {
+    const buildQuery = [Query.orderDesc("$createdAt")];
+
+    if (filter && filter !== "all") {
+      buildQuery.push(Query.equal("type", filter));
+    }
+
+    if (query) {
+      buildQuery.push(
+        Query.or([
+          Query.search("name", query),
+          Query.search("address", query),
+          Query.search("type", query),
+        ])
+      );
+    }
+
+    if (limit) buildQuery.push(Query.limit(limit));
+
+    const properties = await databases.listDocuments(
+      config.databaseId!,
+      config.propertiesCollectionId!,
+      buildQuery
+    );
+
+    if (!properties) throw new Error("Failed to get properties");
+
+    return properties.documents as Property[];
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 };

@@ -4,12 +4,17 @@ import images from "@/constants/images";
 import icons from "@/constants/icons";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme.web";
+import { Models } from "react-native-appwrite";
 
 interface Props {
+  item: Models.Document;
   onPress: () => void;
 }
 
-export const FeaturedCard = ({ onPress }: Props) => {
+export const FeaturedCard = ({
+  item: { image, rating, name, address, price },
+  onPress,
+}: Props) => {
   const [isLiked, setIsLiked] = useState(false);
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
@@ -27,22 +32,22 @@ export const FeaturedCard = ({ onPress }: Props) => {
       accessibilityLabel="Featured card"
       accessibilityRole="button"
     >
-      <Image source={images.japan} style={styles.cardImage} />
+      <Image source={{ uri: image }} style={styles.cardImage} />
       <Image source={images.cardGradient} style={styles.cardGradient} />
 
       <View style={styles.ratingContainer}>
         <Image source={icons.star} style={styles.ratingIcon} />
-        <Text style={styles.ratingText}>4.4</Text>
+        <Text style={styles.ratingText}>{rating}</Text>
       </View>
 
       <View style={styles.cardContent}>
         <Text style={styles.cardTitle} numberOfLines={1}>
-          Modern Apartment
+          {name}
         </Text>
-        <Text style={styles.cardSubtitle}>22 W 15th St, New York</Text>
+        <Text style={styles.cardSubtitle}>{address}</Text>
 
         <View style={styles.priceContainer}>
-          <Text style={styles.cardPrice}>$2,500</Text>
+          <Text style={styles.cardPrice}>$ {price}</Text>
           <TouchableOpacity onPress={handlePress}>
             <Image
               source={icons.heart}
@@ -139,7 +144,10 @@ const Styles = (isDarkMode: boolean) =>
     },
   });
 
-export const Card = ({ onPress }: Props) => {
+export const Card = ({
+  item: { image, rating, name, address, price },
+  onPress,
+}: Props) => {
   const [isLiked, setIsLiked] = useState(false);
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
@@ -155,26 +163,32 @@ export const Card = ({ onPress }: Props) => {
       {/* Rating */}
       <View style={styles.ratingContainer}>
         <Image source={icons.star} style={styles.ratingIcon} />
-        <Text style={styles.ratingText}>4.4</Text>
+        <Text style={styles.ratingText}>{rating}</Text>
       </View>
 
       {/* Image */}
-      <Image source={images.newYork} style={styles.cardImage} />
+      <Image source={{ uri: image }} style={styles.cardImage} />
 
       {/* Content */}
       <View style={styles.cardContent}>
-        <Text style={styles.cardTitle}>Cozy Studio</Text>
-        <Text style={styles.cardSubtitle}>22 W 15th St, New York</Text>
+        <Text style={styles.cardTitle}>{name}</Text>
+        <Text style={styles.cardSubtitle}>{address}</Text>
 
         {/* Price and Like Button */}
         <View style={styles.priceContainer}>
-          <Text style={styles.cardPrice}>$2,500</Text>
+          <Text style={styles.cardPrice}>$ {price}</Text>
           <TouchableOpacity onPress={handlePress}>
             <Image
               source={icons.heart}
               style={[
                 styles.heartIcon,
-                { tintColor: isLiked ? Colors.DANGER : Colors.BLACK1 },
+                {
+                  tintColor: isLiked
+                    ? Colors.DANGER
+                    : isDarkMode
+                    ? Colors.WHITE
+                    : Colors.BLACK1,
+                },
               ]}
             />
           </TouchableOpacity>
@@ -252,6 +266,138 @@ const createStyles = (isDarkMode: boolean) =>
       fontSize: 12,
       fontFamily: "Bold",
       color: isDarkMode ? Colors.WHITE : Colors.PRIMARY1,
+    },
+    heartIcon: {
+      width: 16,
+      height: 16,
+    },
+  });
+
+export const SearchCard = ({
+  item: { image, rating, name, address, price },
+  onPress,
+}: Props) => {
+  const [isLiked, setIsLiked] = useState(false);
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+
+  const handlePress = () => {
+    setIsLiked(!isLiked);
+  };
+
+  const styles = SearchCardStyles(isDarkMode);
+
+  return (
+    <TouchableOpacity onPress={onPress} style={styles.cardContainer}>
+      {/* Image and Rating */}
+      <View>
+        <Image source={{ uri: image }} style={styles.cardImage} />
+        <View style={styles.ratingContainer}>
+          <Image source={icons.star} style={styles.ratingIcon} />
+          <Text style={styles.ratingText}>{rating}</Text>
+        </View>
+      </View>
+
+      {/* Content */}
+      <View style={styles.cardContent}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.cardTitle} numberOfLines={1}>
+            {name}
+          </Text>
+          <TouchableOpacity onPress={handlePress}>
+            <Image
+              source={icons.heart}
+              style={[
+                styles.heartIcon,
+                {
+                  tintColor: isLiked
+                    ? Colors.DANGER
+                    : isDarkMode
+                    ? Colors.WHITE
+                    : Colors.BLACK1,
+                },
+              ]}
+            />
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.cardSubtitle} numberOfLines={1}>
+          {address}
+        </Text>
+
+        <Text style={styles.cardPrice}>${price}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const SearchCardStyles = (isDarkMode: boolean) =>
+  StyleSheet.create({
+    cardContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      padding: 10,
+      borderRadius: 12,
+      backgroundColor: isDarkMode ? Colors.dark.background : Colors.WHITE,
+      shadowColor: isDarkMode ? Colors.BLACK : Colors.BLACK3,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.25,
+      shadowRadius: 4.65,
+      elevation: 8,
+      marginBottom: 10,
+    },
+    ratingContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      position: "absolute",
+      top: 6,
+      right: 6,
+      backgroundColor: isDarkMode ? Colors.dark.background : Colors.WHITE,
+      paddingHorizontal: 4,
+      paddingVertical: 1,
+      borderRadius: 50,
+      zIndex: 10,
+    },
+    ratingIcon: {
+      width: 10,
+      height: 10,
+    },
+    ratingText: {
+      fontSize: 8,
+      fontFamily: "Medium",
+      color: Colors.PRIMARY1,
+      marginLeft: 2,
+    },
+    cardImage: {
+      width: 120,
+      height: 120,
+      borderRadius: 10,
+    },
+    cardContent: {
+      flex: 1,
+      marginLeft: 10,
+    },
+    headerContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    cardTitle: {
+      fontSize: 16,
+      fontFamily: "Bold",
+      color: isDarkMode ? Colors.dark.text : Colors.BLACK1,
+      flexShrink: 1,
+    },
+    cardSubtitle: {
+      fontSize: 12,
+      fontFamily: "Medium",
+      color: isDarkMode ? Colors.dark.icon : Colors.BLACK2,
+      marginVertical: 4,
+    },
+    cardPrice: {
+      fontSize: 16,
+      fontFamily: "Bold",
+      color: Colors.PRIMARY1,
     },
     heartIcon: {
       width: 16,

@@ -1,3 +1,4 @@
+import BellIcon from "@/components/BellIcon";
 import { Colors } from "@/constants/Colors";
 import { settings } from "@/constants/data";
 import icons from "@/constants/icons";
@@ -73,9 +74,9 @@ const Profile = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <View>
+        <View style={styles.headerContainer}>
           <Text style={styles.header}>Profile</Text>
-          <Image source={icons.bell} style={styles.bellIcon} />
+          <BellIcon />
         </View>
 
         <View style={styles.avatarContainer}>
@@ -127,18 +128,25 @@ const createStyles = (isDarkMode: boolean) =>
       paddingBottom: 128,
       paddingHorizontal: 28,
     },
+    headerContainer: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginTop: 24,
+      marginRight: 5,
+    },
     header: {
       fontFamily: "Bold",
       fontSize: 20,
       color: isDarkMode ? Colors.WHITE : "#191D31",
-      marginTop: 24,
     },
     bellIcon: {
       width: 24,
       height: 24,
       resizeMode: "contain",
       position: "absolute",
-      right: 0,
+      right: 12,
       top: 26,
       tintColor: isDarkMode ? Colors.WHITE : Colors.BLACK2,
     },

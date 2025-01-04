@@ -5,6 +5,7 @@ import { Colors } from "@/constants/Colors";
 import icons from "@/constants/icons";
 import { useGlobalContext } from "@/lib/global-provider";
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   StyleSheet,
@@ -12,15 +13,73 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "@/hooks/useColorScheme.web";
+import { router, useLocalSearchParams } from "expo-router";
+import { useAppwrite } from "@/lib/useAppwrite";
+import { getLatestProperties, getProperties } from "@/lib/appwrite";
+import Property from "@/types/property.type";
+import NoResults from "@/components/NoResults";
+import BellIcon from "@/components/BellIcon";
 
 export default function HomeScreen() {
   const { user } = useGlobalContext();
+  const params = useLocalSearchParams<{ query?: string; filter?: string }>();
+
+  const { data: latestProperties, loading: latestPropertiesLoading } =
+    useAppwrite<
+      Property[],
+      { filter?: string; query?: string; limit?: number }
+    >({
+      fn: getLatestProperties,
+    });
+
+  const {
+    data: properties,
+    loading,
+    refetch,
+  } = useAppwrite<
+    Property[],
+    { filter?: string; query?: string; limit?: number }
+  >({
+    fn: getProperties,
+    params: {
+      filter: params.filter,
+      query: params.query,
+      limit: 6,
+    },
+    skip: true,
+  });
+
+  const handleCardPress = (id: string) => {
+    router.push(`/properties/${id}`);
+  };
+
+  useEffect(() => {
+    refetch({
+      filter: params.filter!,
+      query: params.query!,
+      limit: 6,
+    });
+  }, [params.filter, params.query]);
+
+  const getGreeting = () => {
+    const currentHour = new Date().getHours();
+    if (currentHour < 12) {
+      return "Good Morning";
+    } else if (currentHour < 18) {
+      return "Good Afternoon";
+    } else if (currentHour < 22) {
+      return "Good Evening";
+    } else {
+      return "Good Night";
+    }
+  };
+  const greeting = getGreeting();
+
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
-
   const dynamicStyles = StyleSheet.create({
     container: {
       backgroundColor: isDarkMode ? Colors.BLACK : Colors.WHITE,
@@ -36,15 +95,33 @@ export default function HomeScreen() {
     },
     bellIcon: {
       tintColor: isDarkMode ? Colors.WHITE : Colors.BLACK1,
-    }
+    },
+    noResults: {
+      color: isDarkMode ? Colors.WHITE : Colors.BLACK1,
+    },
   });
 
   return (
     <SafeAreaView style={[styles.container, dynamicStyles.container]}>
       <FlatList
-        data={[1, 2, 3, 4]}
-        renderItem={(item) => <Card onPress={() => {}} />}
-        keyExtractor={(Item) => Item.toString()}
+        data={properties}
+        renderItem={({ item }: { item: Property }) => (
+          <Card item={item} onPress={() => handleCardPress(item.$id)} />
+        )}
+        keyExtractor={(item) => item.$id}
+        ListEmptyComponent={
+          loading ? (
+            <ActivityIndicator
+              size="large"
+              style={{
+                marginTop: 20,
+              }}
+              color={Colors.PRIMARY1}
+            />
+          ) : (
+            <NoResults style={dynamicStyles.noResults} />
+          )
+        }
         numColumns={2}
         contentContainerStyle={{ paddingBottom: 80 }}
         columnWrapperStyle={{
@@ -60,38 +137,55 @@ export default function HomeScreen() {
               <View style={styles.userInfo}>
                 <Image source={{ uri: user?.avatar }} style={styles.avatar} />
                 <View style={styles.userDetails}>
-                  <Text style={[styles.greetingText, dynamicStyles.textSecondary]}>
-                    Good Morning
+                  <Text
+                    style={[styles.greetingText, dynamicStyles.textSecondary]}
+                  >
+                    {greeting}
                   </Text>
                   <Text style={[styles.userName, dynamicStyles.textSecondary]}>
                     {user?.name}
                   </Text>
                 </View>
               </View>
-              <Image source={icons.bell} style={[styles.bellIcon, dynamicStyles.bellIcon]} />
+              <BellIcon />
             </View>
 
-            <Search />
+            <Search style={{ width: "90%", marginLeft: 20 }} />
 
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Text style={[styles.sectionTitle, dynamicStyles.textPrimary]}>Featured</Text>
+                <Text style={[styles.sectionTitle, dynamicStyles.textPrimary]}>
+                  Featured
+                </Text>
                 <TouchableOpacity>
-                  <Text style={[styles.sectionLink, dynamicStyles.textLink]}>See All</Text>
+                  <Text style={[styles.sectionLink, dynamicStyles.textLink]}>
+                    See All
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
 
             <View style={styles.featuredCards}>
-              <FlatList
-                data={[1, 2, 3, 4]}
-                renderItem={(item) => <FeaturedCard onPress={() => {}} />}
-                keyExtractor={(Item) => Item.toString()}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ gap: 14 }}
-                bounces={false}
-              />
+              {latestPropertiesLoading ? (
+                <ActivityIndicator size="large" color={Colors.PRIMARY1} />
+              ) : !latestProperties || latestProperties.length === 0 ? (
+                <NoResults style={dynamicStyles.noResults} />
+              ) : (
+                <FlatList
+                  data={latestProperties}
+                  renderItem={({ item }: { item: Property }) => (
+                    <FeaturedCard
+                      item={item}
+                      onPress={() => handleCardPress(item.$id)}
+                    />
+                  )}
+                  keyExtractor={(item) => item.$id}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={{ gap: 14 }}
+                  bounces={false}
+                />
+              )}
             </View>
 
             <View style={styles.section}>
@@ -100,7 +194,9 @@ export default function HomeScreen() {
                   Our Recommendation
                 </Text>
                 <TouchableOpacity>
-                  <Text style={[styles.sectionLink, dynamicStyles.textLink]}>See All</Text>
+                  <Text style={[styles.sectionLink, dynamicStyles.textLink]}>
+                    See All
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -184,4 +280,3 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
-
