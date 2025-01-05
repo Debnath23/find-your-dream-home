@@ -37,7 +37,7 @@ export default function ExploreScreen() {
     params: {
       filter: params.filter,
       query: params.query,
-      limit: 6,
+      limit: 20,
     },
     skip: true,
   });
@@ -50,7 +50,7 @@ export default function ExploreScreen() {
     refetch({
       filter: params.filter!,
       query: params.query!,
-      limit: 6,
+      limit: 20,
     });
   }, [params.filter, params.query]);
 
@@ -71,6 +71,9 @@ export default function ExploreScreen() {
     },
     noResults: {
       color: isDarkMode ? Colors.WHITE : Colors.BLACK1,
+    },
+    backArrow: {
+      tintColor: isDarkMode ? Colors.WHITE : Colors.BLACK1,
     },
   });
 
@@ -107,7 +110,12 @@ export default function ExploreScreen() {
           <View>
             <View style={styles.header}>
               <View style={styles.backArrowContainer}>
-                <Image source={icons.backArrow} style={styles.backArrow} />
+                <TouchableOpacity onPress={() => router.back()}>
+                  <Image
+                    source={icons.backArrow}
+                    style={[styles.backArrow, dynamicStyles.backArrow]}
+                  />
+                </TouchableOpacity>
               </View>
 
               <View style={styles.headerContent}>
@@ -172,7 +180,6 @@ const styles = StyleSheet.create({
   headerContent: {
     flexDirection: "column",
     alignItems: "flex-start",
-    marginLeft: 10,
     justifyContent: "center",
   },
   headerText: {

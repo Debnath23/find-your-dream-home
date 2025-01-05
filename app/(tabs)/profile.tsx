@@ -106,7 +106,7 @@ const Profile = () => {
             icon={icons.logout}
             onPress={handleLogout}
             showArrow={false}
-            textStyle={{ color: Colors.DANGER }}
+            textStyle={{ color: Colors.DANGER, tintColor: Colors.DANGER }}
           />
         </View>
       </ScrollView>
@@ -133,7 +133,7 @@ const createStyles = (isDarkMode: boolean) =>
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      marginTop: 24,
+      marginTop: 4,
       marginRight: 5,
     },
     header: {

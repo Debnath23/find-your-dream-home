@@ -47,7 +47,7 @@ export default function HomeScreen() {
     params: {
       filter: params.filter,
       query: params.query,
-      limit: 6,
+      limit: 10,
     },
     skip: true,
   });
@@ -60,7 +60,7 @@ export default function HomeScreen() {
     refetch({
       filter: params.filter!,
       query: params.query!,
-      limit: 6,
+      limit: 10,
     });
   }, [params.filter, params.query]);
 

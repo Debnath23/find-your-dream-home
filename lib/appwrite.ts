@@ -159,3 +159,24 @@ export const getProperties = async ({
     return [];
   }
 };
+
+export const getPropertyById = async ({
+  id,
+}: {
+  id: string;
+}): Promise<Property | null> => {
+  try {
+    const property = await databases.getDocument(
+      config.databaseId!,
+      config.propertiesCollectionId!,
+      id
+    );
+
+    if (!property) throw new Error("Failed to get property");
+
+    return property as Property;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

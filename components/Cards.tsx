@@ -207,10 +207,10 @@ const createStyles = (isDarkMode: boolean) =>
       borderRadius: 12,
       padding: 8,
       backgroundColor: isDarkMode ? Colors.dark.background : Colors.WHITE,
-      shadowColor: isDarkMode ? Colors.BLACK : Colors.BLACK3,
+      shadowColor: isDarkMode ? Colors.WHITE : Colors.BLACK,
       shadowOffset: {
-        width: 0,
-        height: 4,
+        width: 24,
+        height: 24,
       },
       shadowOpacity: 0.25,
       shadowRadius: 4.65,
@@ -235,7 +235,7 @@ const createStyles = (isDarkMode: boolean) =>
     ratingText: {
       fontSize: 10,
       fontFamily: "Medium",
-      color: isDarkMode ? Colors.dark.tint : Colors.PRIMARY1,
+      color: isDarkMode ? Colors.WHITE : Colors.PRIMARY1,
       marginLeft: 4,
     },
     cardImage: {
@@ -335,12 +335,12 @@ const SearchCardStyles = (isDarkMode: boolean) =>
   StyleSheet.create({
     cardContainer: {
       flexDirection: "row",
-      alignItems: "center",
+      alignItems: "flex-start",
       padding: 10,
       borderRadius: 12,
       backgroundColor: isDarkMode ? Colors.dark.background : Colors.WHITE,
-      shadowColor: isDarkMode ? Colors.BLACK : Colors.BLACK3,
-      shadowOffset: { width: 0, height: 4 },
+      shadowColor: isDarkMode ? Colors.WHITE : Colors.BLACK,
+      shadowOffset: { width: 24, height: 24 },
       shadowOpacity: 0.25,
       shadowRadius: 4.65,
       elevation: 8,
@@ -348,7 +348,7 @@ const SearchCardStyles = (isDarkMode: boolean) =>
     },
     ratingContainer: {
       flexDirection: "row",
-      alignItems: "center",
+      alignItems: "flex-start",
       position: "absolute",
       top: 6,
       right: 6,
@@ -365,12 +365,12 @@ const SearchCardStyles = (isDarkMode: boolean) =>
     ratingText: {
       fontSize: 8,
       fontFamily: "Medium",
-      color: Colors.PRIMARY1,
+      color: isDarkMode ? Colors.WHITE : Colors.PRIMARY1,
       marginLeft: 2,
     },
     cardImage: {
       width: 120,
-      height: 120,
+      height: 100,
       borderRadius: 10,
     },
     cardContent: {
@@ -380,7 +380,7 @@ const SearchCardStyles = (isDarkMode: boolean) =>
     headerContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
-      alignItems: "center",
+      alignItems: "flex-start",
     },
     cardTitle: {
       fontSize: 16,
@@ -400,7 +400,7 @@ const SearchCardStyles = (isDarkMode: boolean) =>
       color: Colors.PRIMARY1,
     },
     heartIcon: {
-      width: 16,
-      height: 16,
+      width: 18,
+      height: 18,
     },
   });
