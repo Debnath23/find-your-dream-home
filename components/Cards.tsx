@@ -53,7 +53,7 @@ export const FeaturedCard = ({
               source={icons.heart}
               style={[
                 styles.heartIcon,
-                { tintColor: isLiked ? Colors.DANGER : Colors.WHITE },
+                !isLiked && { tintColor: Colors.WHITE },
               ]}
             />
           </TouchableOpacity>
@@ -182,12 +182,8 @@ export const Card = ({
               source={icons.heart}
               style={[
                 styles.heartIcon,
-                {
-                  tintColor: isLiked
-                    ? Colors.DANGER
-                    : isDarkMode
-                    ? Colors.WHITE
-                    : Colors.BLACK1,
+                !isLiked && {
+                  tintColor: isDarkMode ? Colors.WHITE : Colors.BLACK3,
                 },
               ]}
             />
@@ -309,12 +305,8 @@ export const SearchCard = ({
               source={icons.heart}
               style={[
                 styles.heartIcon,
-                {
-                  tintColor: isLiked
-                    ? Colors.DANGER
-                    : isDarkMode
-                    ? Colors.WHITE
-                    : Colors.BLACK1,
+                !isLiked && {
+                  tintColor: isDarkMode ? Colors.WHITE : Colors.BLACK3,
                 },
               ]}
             />

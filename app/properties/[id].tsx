@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   Image,
@@ -18,11 +18,15 @@ import { facilities } from "@/constants/data";
 import { useAppwrite } from "@/lib/useAppwrite";
 import { getPropertyById } from "@/lib/appwrite";
 import { Colors } from "@/constants/Colors";
+import { useColorScheme } from "@/hooks/useColorScheme.web";
 
 const Property = () => {
+  const [isLiked, setIsLiked] = useState(false);
   const { id } = useLocalSearchParams<{ id?: string }>();
-
   const windowHeight = Dimensions.get("window").height;
+
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
 
   const { data: property } = useAppwrite({
     fn: getPropertyById,
@@ -30,6 +34,12 @@ const Property = () => {
       id: id!,
     },
   });
+
+  const handlePress = () => {
+    setIsLiked(!isLiked);
+  };
+
+  const styles = createStyles(isDarkMode);
 
   return (
     <View style={styles.container}>
@@ -65,11 +75,15 @@ const Property = () => {
               </TouchableOpacity>
 
               <View style={styles.headerIcons}>
-                <Image
-                  source={icons.heart}
-                  style={[styles.icon, { tintColor: "#191D31" }]}
-                />
-                <Image source={icons.send} style={styles.icon} />
+                <TouchableOpacity onPress={handlePress}>
+                  <Image
+                    source={icons.heart}
+                    style={[
+                      styles.icon,
+                      !isLiked && { tintColor: Colors.WHITE },
+                    ]}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
           </View>
@@ -84,7 +98,7 @@ const Property = () => {
             </View>
 
             <View style={styles.ratingContainer}>
-              <Image source={icons.star} style={styles.icon} />
+              <Image source={icons.star} style={styles.ratingIcon} />
               <Text style={styles.ratingText}>
                 {property?.rating} (
                 {Array.isArray(property?.reviews) ? property.reviews.length : 0}{" "}
@@ -170,7 +184,7 @@ const Property = () => {
                         <View key={index} style={styles.facilityItem}>
                           <View style={styles.facilityIconWrapper}>
                             <Image
-                              source={facility ? facility.icon : icons.info}
+                              source={facility ? facility.icon : icons.loading}
                               style={styles.iconMedium}
                             />
                           </View>
@@ -202,7 +216,11 @@ const Property = () => {
                     if (galleryItem && galleryItem.image) {
                       return (
                         <Image
-                          source={{ uri: galleryItem.image }}
+                          source={
+                            galleryItem.image
+                              ? { uri: galleryItem.image }
+                              : images.img
+                          }
                           style={styles.galleryImage}
                         />
                       );
@@ -227,7 +245,7 @@ const Property = () => {
               <View style={styles.reviewsContainer}>
                 <View style={styles.reviewsHeader}>
                   <View style={styles.reviewsHeaderInfo}>
-                    <Image source={icons.star} style={styles.iconSmall} />
+                    <Image source={icons.star} style={styles.reviewIcon} />
                     <Text style={styles.reviewsTitle}>
                       {property?.rating} ({property?.reviews?.length} reviews)
                     </Text>
@@ -250,8 +268,8 @@ const Property = () => {
 
       <View style={styles.bookNowContainer}>
         <View style={styles.bookNowWrapper}>
-          <View style={styles.priceContainer}>
-            <Text style={styles.priceLabel}>Price</Text>
+          <View>
+            <Text style={styles.priceLabel}>PRICE</Text>
             <Text style={styles.priceText}>${property?.price}</Text>
           </View>
 
@@ -264,307 +282,322 @@ const Property = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollViewContent: {
-    paddingBottom: 100,
-  },
-  imageContainer: {
-    position: "relative",
-    width: "100%",
-  },
-  image: {
-    height: "100%",
-    width: "100%",
-    resizeMode: "cover",
-  },
-  gradientImage: {
-    position: "absolute",
-    top: 0,
-    width: "100%",
-    zIndex: 40,
-  },
-  headerWrapper: {
-    position: "absolute",
-    left: 7,
-    right: 7,
-    zIndex: 50,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  backButton: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  icon: {
-    width: 20,
-    height: 20,
-  },
-  headerIcons: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  propertyInfoContainer: {
-    paddingHorizontal: 20,
-    marginTop: 20,
-    gap: 8,
-  },
-  propertyName: {
-    fontSize: 24,
-    fontFamily: "Bold",
-  },
-  propertyTypeContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  propertyType: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: Colors.PRIMARY2,
-    borderRadius: 50,
-  },
-  propertyTypeText: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: Colors.PRIMARY1,
-  },
-  ratingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-  },
-  ratingText: {
-    color: Colors.BLACK2,
-    fontFamily: "Bold",
-  },
-  detailsContainer: {
-    display: "flex",
-    flexDirection: "row",
-    gap: 10,
-    marginTop: 6,
-  },
-  detailsItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: Colors.PRIMARY2,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-    borderRadius: 100,
-    gap: 10,
-  },
-  iconSmall: {
-    width: 16,
-    height: 16,
-  },
-  detailsText: {
-    fontFamily: "Regular",
-    fontSize: 12,
-    color: Colors.BLACK1,
-  },
-  agentContainer: {
-    marginTop: 18,
-  },
-  agentTitle: {
-    fontSize: 20,
-    fontFamily: "Bold",
-  },
-  agentInfo: {
-    display: "flex",
-    marginTop: 10,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 10,
-  },
-  agentPersonalInfo: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 10,
-  },
-  agentAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 100,
-  },
-  agentDetails: {
-    flexDirection: "column",
-    justifyContent: "center",
-  },
-  agentName: {
-    fontSize: 16,
-    fontFamily: "Medium",
-    color: Colors.BLACK1,
-  },
-  agentEmail: {
-    color: Colors.BLACK2,
-    fontFamily: "Regular",
-    fontSize: 12,
-  },
-  agentActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    justifyContent: "flex-end",
-  },
-  agentInfoIcon: {
-    width: 24,
-    height: 24,
-  },
-  overviewContainer: {
-    marginTop: 14,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontFamily: "Bold",
-  },
-  overviewText: {
-    lineHeight: 22,
-    color: Colors.BLACK2,
-    fontFamily: "Regular",
-  },
-  facilitiesContainer: {
-    marginTop: 10,
-  },
-  facilitiesList: {
-    marginTop: 10,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 18,
-  },
-  facilityItem: {
-    flexDirection: "column",
-    alignItems: "center",
-    gap: 8,
-  },
-  facilityIconWrapper: {
-    backgroundColor: Colors.PRIMARY2,
-    padding: 6,
-    borderRadius: 50,
-    height: 60,
-    width: 60,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  iconMedium: {
-    width: 28,
-    height: 28,
-  },
-  facilityTitle: {
-    fontSize: 12,
-    fontFamily: "Medium",
-    color: Colors.BLACK2,
-  },
-  galleryContainer: {
-    marginTop: 10,
-  },
-  galleryList: {
-    marginTop: 12,
-    gap: 12,
-  },
-  galleryImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 8,
-    resizeMode: "cover",
-  },
-  locationContainer: {
-    marginTop: 30,
-  },
-  locationInfo: {
-    flexDirection: "row",
-    gap: 6,
-    marginTop: 12,
-  },
-  iconLocation: {
-    width: 16,
-    height: 16,
-  },
-  locationText: {
-    color: "#BDBDBD",
-    fontWeight: "600",
-  },
-  mapImage: {
-    width: "100%",
-    height: 200,
-    borderRadius: 16,
-    marginTop: 20,
-  },
-  reviewsContainer: {
-    marginTop: 30,
-  },
-  reviewsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  reviewsHeaderInfo: {
-    flexDirection: "row",
-    gap: 6,
-  },
-  reviewsTitle: {
-    color: "#BDBDBD",
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-  viewAllText: {
-    color: "#FF4081",
-    fontSize: 12,
-    fontWeight: "bold",
-  },
-  commentContainer: {
-    marginTop: 12,
-  },
-  bookNowContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 50,
-    backgroundColor: "#FFFFFF",
-    padding: 20,
-    shadowColor: "#000000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: -10 },
-    shadowRadius: 10,
-  },
-  bookNowWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  priceContainer: {
-    gap: 4,
-  },
-  priceLabel: {
-    fontSize: 12,
-    fontWeight: "bold",
-    color: "#BDBDBD",
-  },
-  priceText: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  bookNowButton: {
-    backgroundColor: "#FF4081",
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-  },
-  bookNowText: {
-    color: "#FFFFFF",
-    fontWeight: "600",
-    fontSize: 16,
-  },
-});
+const createStyles = (isDarkMode: boolean) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    scrollViewContent: {
+      paddingBottom: 100,
+    },
+    imageContainer: {
+      position: "relative",
+      width: "100%",
+    },
+    image: {
+      height: "100%",
+      width: "100%",
+      resizeMode: "cover",
+    },
+    gradientImage: {
+      position: "absolute",
+      top: 0,
+      width: "100%",
+      zIndex: 40,
+    },
+    headerWrapper: {
+      position: "absolute",
+      left: 7,
+      right: 7,
+      zIndex: 50,
+      paddingHorizontal: 20,
+      paddingTop: 20,
+    },
+    header: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    backButton: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    icon: {
+      width: 20,
+      height: 20,
+      resizeMode: "contain",
+    },
+    headerIcons: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
+    propertyInfoContainer: {
+      paddingHorizontal: 20,
+      marginTop: 20,
+      gap: 8,
+    },
+    propertyName: {
+      fontSize: 24,
+      fontFamily: "Bold",
+      color: isDarkMode ? Colors.WHITE : Colors.BLACK,
+    },
+    propertyTypeContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+    },
+    propertyType: {
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: isDarkMode ? Colors.WHITE : Colors.PRIMARY2,
+      borderRadius: 50,
+    },
+    propertyTypeText: {
+      fontSize: 12,
+      fontFamily: "Bold",
+      color: Colors.PRIMARY1,
+    },
+    ratingContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 6,
+    },
+    ratingIcon: {
+      width: 20,
+      height: 20,
+    },
+    ratingText: {
+      color: isDarkMode ? Colors.dark.text : Colors.BLACK2,
+      fontFamily: "Bold",
+      marginTop: 3,
+    },
+    detailsContainer: {
+      display: "flex",
+      flexDirection: "row",
+      gap: 10,
+      marginTop: 6,
+    },
+    detailsItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: isDarkMode ? Colors.dark.background : Colors.PRIMARY2,
+      paddingVertical: 6,
+      paddingHorizontal: 8,
+      borderRadius: 100,
+      gap: 10,
+    },
+    iconSmall: {
+      width: 16,
+      height: 16,
+    },
+    detailsText: {
+      fontFamily: "Regular",
+      fontSize: 12,
+      color: isDarkMode ? Colors.dark.text : Colors.light.text,
+    },
+    agentContainer: {
+      marginTop: 18,
+    },
+    agentTitle: {
+      fontSize: 20,
+      fontFamily: "Bold",
+      color: isDarkMode ? Colors.dark.text : Colors.light.text,
+    },
+    agentInfo: {
+      display: "flex",
+      marginTop: 10,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      gap: 10,
+    },
+    agentPersonalInfo: {
+      display: "flex",
+      flexDirection: "row",
+      justifyContent: "center",
+      gap: 10,
+    },
+    agentAvatar: {
+      width: 50,
+      height: 50,
+      borderRadius: 100,
+    },
+    agentDetails: {
+      flexDirection: "column",
+      justifyContent: "center",
+    },
+    agentName: {
+      fontSize: 16,
+      fontFamily: "Medium",
+      color: isDarkMode ? Colors.dark.text : Colors.light.text,
+    },
+    agentEmail: {
+      color: isDarkMode ? Colors.dark.text : Colors.BLACK2,
+      fontFamily: "Regular",
+      fontSize: 12,
+    },
+    agentActions: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 12,
+      justifyContent: "flex-end",
+    },
+    agentInfoIcon: {
+      width: 24,
+      height: 24,
+    },
+    overviewContainer: {
+      marginTop: 14,
+    },
+    sectionTitle: {
+      fontSize: 20,
+      fontFamily: "Bold",
+      color: isDarkMode ? Colors.dark.text : Colors.light.text,
+    },
+    overviewText: {
+      lineHeight: 22,
+      color: isDarkMode ? Colors.dark.text : Colors.BLACK2,
+      fontFamily: "Regular",
+    },
+    facilitiesContainer: {
+      marginTop: 10,
+    },
+    facilitiesList: {
+      marginTop: 10,
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: 12,
+    },
+    facilityItem: {
+      flexDirection: "column",
+      alignItems: "center",
+      gap: 8,
+    },
+    facilityIconWrapper: {
+      backgroundColor: isDarkMode ? Colors.dark.background : Colors.PRIMARY2,
+      padding: 6,
+      borderRadius: 50,
+      height: 60,
+      width: 60,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    iconMedium: {
+      width: 28,
+      height: 28,
+    },
+    facilityTitle: {
+      fontSize: 12,
+      fontFamily: "Medium",
+      color: isDarkMode ? Colors.dark.text : Colors.BLACK2,
+    },
+    galleryContainer: {
+      marginTop: 10,
+    },
+    galleryList: {
+      marginTop: 12,
+      gap: 12,
+    },
+    galleryImage: {
+      width: 118,
+      height: 118,
+      borderRadius: 8,
+      resizeMode: "cover",
+    },
+    locationContainer: {
+      marginTop: 10,
+    },
+    locationInfo: {
+      flexDirection: "row",
+      gap: 6,
+      marginTop: 6,
+    },
+    iconLocation: {
+      width: 18,
+      height: 18,
+    },
+    locationText: {
+      color: isDarkMode ? Colors.dark.text : Colors.BLACK2,
+      fontFamily: "Medium",
+    },
+    mapImage: {
+      width: "100%",
+      height: 200,
+      borderRadius: 16,
+      marginTop: 10,
+    },
+    reviewsContainer: {
+      marginTop: 10,
+    },
+    reviewsHeader: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+    },
+    reviewsHeaderInfo: {
+      flexDirection: "row",
+      gap: 6,
+    },
+    reviewIcon: {
+      width: 24,
+      height: 24,
+      resizeMode: "contain",
+    },
+    reviewsTitle: {
+      color: isDarkMode ? Colors.dark.text : "#191D31",
+      fontSize: 16,
+      fontFamily: "Medium",
+    },
+    viewAllText: {
+      color: "#FF4081",
+      fontSize: 12,
+      fontFamily: "Medium",
+    },
+    commentContainer: {
+      marginTop: 12,
+    },
+    bookNowContainer: {
+      position: "absolute",
+      bottom: 0,
+      left: 0,
+      right: 0,
+      zIndex: 50,
+      backgroundColor: Colors.WHITE,
+      paddingVertical: 16,
+      paddingHorizontal: 20,
+      borderTopLeftRadius: 36,
+      borderTopRightRadius: 36,
+    },
+    bookNowWrapper: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    priceLabel: {
+      fontSize: 14,
+      fontFamily: "Bold",
+      color: Colors.BLACK2,
+    },
+    priceText: {
+      fontSize: 24,
+      fontFamily: "Bold",
+      color: Colors.PRIMARY1,
+    },
+    bookNowButton: {
+      backgroundColor: Colors.PRIMARY1,
+      borderRadius: 100,
+      width: 200,
+      height: 50,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    bookNowText: {
+      color: Colors.WHITE,
+      fontFamily: "Bold",
+      fontSize: 16,
+    },
+  });
 
 export default Property;
