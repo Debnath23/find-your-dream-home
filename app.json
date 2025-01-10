@@ -1,17 +1,18 @@
 {
   "expo": {
-    "name": "real-estate-app",
+    "name": "find your home",
     "slug": "real-estate-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "real-estate-app",
+    "scheme": "find-your-home",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.debnath.findyourhome",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
@@ -27,7 +28,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/icon.png",
           "resizeMode": "cover",
           "backgroundColor": "#ffffff",
           "enableFullScreenImage_legacy": true
@@ -37,18 +38,26 @@
         "expo-font",
         {
           "fonts": [
-            "./assets/fonts/Roboto-Light.ttf",
-            "./assets/fonts/Roboto-Regular.ttf",
-            "./assets/fonts/Roboto-Medium.ttf",
-            "./assets/fonts/Roboto-SemiBold.ttf",
-            "./assets/fonts/Roboto-Bold.ttf",
-            "./assets/fonts/Roboto-ExtraBold.ttf"
+            "./assets/fonts/Rubik-Light.ttf",
+            "./assets/fonts/Rubik-Regular.ttf",
+            "./assets/fonts/Rubik-Medium.ttf",
+            "./assets/fonts/Rubik-SemiBold.ttf",
+            "./assets/fonts/Rubik-Bold.ttf",
+            "./assets/fonts/Rubik-ExtraBold.ttf"
           ]
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f9207b9e-5f52-4a50-8cb9-67c2749c7adb"
+      }
     }
   }
 }
